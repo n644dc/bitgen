@@ -52,6 +52,7 @@ class WalletGen:
                     line = "{}\n".format(", ".join(wallet))
                     savFile.write(line)
 
+            print("FileSaved: ", walletFile)
             self.Wallets = []
 
             if self.walletsTotalCount % self.walFolderSize == 0:
@@ -85,6 +86,7 @@ class WalletGen:
 
         wallet = [phrase, privateHex, privateWIF, publicHex, publicAddr, publicH160]
         self.Wallets.append(wallet)
+        print("Wallet Created: {}".format(wallet))
         self.walletsTotalCount += 1
         self.saveWallets()
 
