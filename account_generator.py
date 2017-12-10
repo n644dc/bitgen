@@ -10,15 +10,19 @@ class WalletGen:
 
         # Init Vars
         self.workDir = '/var/www/html/bitcon' if self.isLinux else 'C:\\bitcon'
-        self.walletsLoc = "{}/gen/".format(self.workDir) if self.isLinux else "{}\\gen\\".format(self.workDir)
+        self.walletsLoc = "{}/milli_pass/".format(self.workDir) if self.isLinux else "{}\\milli_pass\\".format(self.workDir)
         self.wordFile = 'linux.words'
+        # self.passwords = 'top100k.txt'
+        self.passwordsFile = 'topMillion.txt'
         self.walletsTotalCount = 0
         self.lastWalletCount = 1
-        self.walFileSize = 1000
+        self.walFileSize = 100
         self.walFolderSize = 20000
 
         self.Wallets = []
         self.words = []
+        self.numbers = []
+        self.passwords = []
 
         # Create DIR Struct
         if not os.path.exists(self.workDir):
@@ -27,7 +31,10 @@ class WalletGen:
         if not os.path.exists(self.walletsLoc):
             os.makedirs(self.walletsLoc)
 
-        self.currentWalletFolder = "{}{}_{}".format(self.walletsLoc, self.lastWalletCount, self.walFolderSize)
+        if self.walletsTotalCount > 0:
+            self.currentWalletFolder = "{}{}_{}".format(self.walletsLoc, self.walletsTotalCount+1, self.walletsTotalCount+1+self.walFolderSize)
+        else:
+            self.currentWalletFolder = "{}{}_{}".format(self.walletsLoc, self.lastWalletCount, self.walFolderSize)
 
 
     @staticmethod
@@ -52,7 +59,7 @@ class WalletGen:
                     line = "{}\n".format(", ".join(wallet))
                     savFile.write(line)
 
-            print("FileSaved: ", walletFile)
+            print("FileSaved: {}".format(walletFile))
             self.Wallets = []
 
             if self.walletsTotalCount % self.walFolderSize == 0:
@@ -63,14 +70,8 @@ class WalletGen:
 
 
     def genPrep(self, phraseArray):
-        # Prase with spaces
-        phrase = " ".join(phraseArray)
+        phrase = "".join(phraseArray)
         self.generateWallet(phrase)
-
-        # Phrase smooshed together if last word is integer
-        if len(phraseArray) > 1 and self.representsInt(phraseArray[1]):
-            phrase = "".join(phraseArray)
-            self.generateWallet(phrase)
 
 
     def generateWallet(self, phrase):
@@ -84,24 +85,32 @@ class WalletGen:
         publicAddr = public_key.address()
         publicH160 = public_key.hash160()
 
-        wallet = [phrase, privateHex, privateWIF, publicHex, publicAddr, publicH160]
+        wallet = [str(self.walletsTotalCount), phrase, privateHex, privateWIF, publicHex, publicAddr, publicH160]
         self.Wallets.append(wallet)
-        print("Wallet Created: {}".format(wallet))
         self.walletsTotalCount += 1
         self.saveWallets()
 
     def generatePhrases(self):
-        with open(self.wordFile) as f:
+        with open(self.passwordsFile) as f:
             self.words = f.readlines()
-
         self.words = [x.strip() for x in self.words]
 
-        for word in self.words:
-            self.genPrep([word])
+        for word in self.words[self.walletsTotalCount:]:
+            self.generateWallet(word)
 
-            for word2 in self.words:
-                self.genPrep([word, word2])
 
+        # with open(self.wordFile) as f:
+        #    self.words = f.readlines()
+        # self.words = [x.strip() for x in self.words]
+        # self.numbers = [x for x in self.words if self.representsInt(x)]
+        # self.words = [x for x in self.words if len(x) >= 3]
+        # self.words = [x for x in self.words if "'" not in x]
+        # self.words = self.words + self.numbers
+        #
+        # for word in self.words:
+        #     self.genPrep([word])
+        #     for number in self.numbers:
+        #         self.genPrep([word, number])
 
 
 def main():
