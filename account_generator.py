@@ -67,7 +67,7 @@ class WalletGen:
         self.generateWallet(phrase)
 
         # Phrase smooshed together if last word is integer
-        if len(phraseArray) > 1 and self.representsInt(phraseArray[2]):
+        if len(phraseArray) > 1 and self.representsInt(phraseArray[1]):
             phrase = "".join(phraseArray)
             self.generateWallet(phrase)
 
