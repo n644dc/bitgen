@@ -8,12 +8,16 @@ class WalletGen:
 
         self.isLinux = sys.platform.lower().startswith('linux')
 
+        self.wordFile = 'linux.words'
+        self.wordFile = 'top100k.txt'
+        self.wordFile = 'topMillion.txt'
+
+        self.folderName = filter(str.isalnum, self.wordFile)
+
         # Init Vars
         self.workDir = '/var/www/html/bitcon' if self.isLinux else 'C:\\bitcon'
-        self.walletsLoc = "{}/milli_pass/".format(self.workDir) if self.isLinux else "{}\\milli_pass\\".format(self.workDir)
-        self.wordFile = 'linux.words'
-        # self.passwords = 'top100k.txt'
-        self.passwordsFile = 'topMillion.txt'
+        self.walletsLoc = "{}/{}/".format(self.workDir, self.folderName) if self.isLinux else "{}\\{}\\".format(self.workDir, self.folderName)
+
         self.walletsTotalCount = 0
         self.lastWalletCount = 1
         self.walFileSize = 100
@@ -91,7 +95,7 @@ class WalletGen:
         self.saveWallets()
 
     def generatePhrases(self):
-        with open(self.passwordsFile) as f:
+        with open(self.wordFile) as f:
             self.words = f.readlines()
         self.words = [x.strip() for x in self.words]
 
