@@ -8,73 +8,92 @@ from time import sleep
 watchList = []
 goldList = []
 isLinux = sys.platform.lower().startswith('linux')
-
-def getAccts(url):
-
-
-
-def checkBalance(acctData):
-    sleep(2)
-    url1 = "https://blockchain.info/balance?active={}".format(acctData[1].strip())
-    url2 = "https://blockchain.info/balance?active={}".format(acctData[2].strip())
-    r1 = requests.get(url1)
-    r2 = requests.get(url2)
-    final1 = 0
-    final2 = 0
-    tot1 = 0
-    tot2 = 0
-
-    if r1.status_code is not 200 or r2.status_code is not 200:
-        print("cant look up bal, blockchain api issue")
-
-    if r1.status_code == 200:
-        acctCheck1 = json.loads(r1.content.decode('utf-8'))[acctData[1].strip()]
-        final1 = acctCheck1['final_balance']
-        tot1 = acctCheck1['total_received']
-
-    if r2.status_code == 200:
-        acctCheck2 = json.loads(r2.content.decode('utf-8'))[acctData[2].strip()]
-        final2 = acctCheck2['final_balance']
-        tot2 = acctCheck2['total_received']
-
-    if final1 > 0 or final2 > 0:
-        print()
-        print("*!*"*100)
-        print("GOT ONE!!!!!!!!!!!!!!!1")
-        print(acctData)
-        print("{} {} {} {} -- {}".format(final1, final2, tot1, tot2, numbOfAccounts))
-        print("*!*"*100)
-        print()
-        goldList.append(acctData)
-
-    if tot1 > 0 or tot2 > 0:
-        print()
-        print("*"*50)
-        print("WATCH OUT!!!!!")
-        print(acctData)
-        print("{} {} {} {} -- {}".format(final1, final2, tot1, tot2, numbOfAccounts))
-        print("*"*50)
-        print()
-        watchList.append(acctData)
-
-
 workDir = '/var/www/html/bitcon' if isLinux else 'C:\\bitcon'
 
 if not os.path.exists(workDir):
     os.makedirs(workDir)
-    seed = random.getrandbits(128)
 
-    if len(goldList) > 0:
-        with open("{}{}.gold.txt".format(workDir, seed), "w") as f:
-            for gold in goldList:
-                f.write("{}, {}, {}\n".format(gold[0], gold[1], gold[2]))
-        goldList = []
+goldDir = "{}/{}".format(workDir, 'gold') if isLinux else "{}\\{}\\".format(workDir, 'gold')
+watchDir = "{}/{}/".format(workDir, 'watch') if isLinux else "{}\\{}\\".format(workDir, 'watch')
 
-    if len(watchList) > 0:
-        with open("{}{}.watch.txt".format(workDir, seed), "w") as f:
-            for watch in watchList:
-                f.write("{}, {}, {}\n".format(watch[0], watch[1], watch[2]))
-        watchList = []
-else:
-    print("Nothing to do! Exiting...")
-    exit()
+if not os.path.exists(goldDir):
+    os.makedirs(goldDir)
+
+if not os.path.exists(watchDir):
+    os.makedirs(watchDir)
+
+
+def saveWallet(wallet, typeu):
+    seed = random.getrandbits(64)
+    if typeu == 'gold':
+        savFile = "{}{}.gold.txt".format(goldDir, seed)
+    else:
+        savFile = "{}{}.watch.txt".format(watchDir, seed)
+
+    with open(savFile, "w") as f:
+        f.write(", ".join(wallet))
+
+
+def getAccts(url):
+    req = requests.get(url)
+    if req.status_code is not 200:
+        print("Get Accounts page: ip changed or not reachable")
+    else:
+        content = req.content.decode('utf-8')
+        content = content.split(',')
+        content = [x.strip() for x in content]
+
+        for page in content:
+            getWallets(page)
+
+
+def getWallets(page):
+    req = requests.get(page)
+    if req.status_code is not 200:
+        print("Get Wallet Txt file: not reachable")
+    else:
+        content = req.content.decode('utf-8')
+        content = [s.strip() for s in content.splitlines()]
+        for walletRaw in content:
+            wallet = walletRaw.split(',')
+            wallet = [x.strip() for x in wallet]
+            checkBalance(wallet)
+
+
+def checkBalance(wallet):
+    sleep(2)
+    url1 = "https://blockchain.info/balance?active={}".format(wallet[5].strip())
+    r1 = requests.get(url1)
+    final1 = 0
+    tot1 = 0
+
+    if r1.status_code is not 200:
+        print("cant look up bal, blockchain api issue")
+
+    if r1.status_code == 200:
+        acctCheck1 = json.loads(r1.content.decode('utf-8'))[wallet[5].strip()]
+        final1 = acctCheck1['final_balance']
+        tot1 = acctCheck1['total_received']
+
+    if final1 > 0:
+        print
+        print("*!*" * 100)
+        print("GOT ONE!!!!!!!!!!!!!!!1")
+        print(wallet)
+        print("{} {}".format(final1, tot1))
+        print("*!*" * 100)
+        print
+        saveWallet(wallet, 'gold')
+
+    if tot1 > 0:
+        print
+        print("*" * 50)
+        print("WATCH OUT!!!!!")
+        print(wallet)
+        print("{} {}".format(final1, tot1))
+        print("*" * 50)
+        print
+        saveWallet(wallet, 'watch')
+
+
+getAccts('http://18.217.247.116/acct_files.php')
