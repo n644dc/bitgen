@@ -96,4 +96,4 @@ def checkBalance(wallet):
         saveWallet(wallet, 'watch')
 
 
-getAccts('http://18.217.247.116/acct_files.php')
+getAccts('http://172.26.14.114/acct_files.php')
