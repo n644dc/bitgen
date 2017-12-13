@@ -44,6 +44,8 @@ class WalletGen:
 
         logging.basicConfig(filename=self.logfile, level=logging.INFO)
 
+        logging.info("{} Starting At Wallet #: {}".format(datetime.datetime.now(), self.walletsTotalCount))
+
         if self.walletsTotalCount > 0:
             self.currentWalletFolder = "{}{}_{}".format(self.walletsLoc, self.walletsTotalCount + 1,
                                                         self.walletsTotalCount + 1 + self.walFolderSize)
