@@ -1,6 +1,8 @@
 from pybitcoin import BitcoinPrivateKey
 import sys
 import os
+import logging
+import datetime
 
 
 class WalletGen:
@@ -19,6 +21,8 @@ class WalletGen:
         self.walletsLoc = "{}/{}/".format(self.workDir, self.folderName) if self.isLinux else "{}\\{}\\".format(
             self.workDir, self.folderName)
 
+        self.logfile = "{}/loggo.txt".format(self.workDir) if self.isLinux else "{}\\loggo.txt"
+
         self.walletsTotalCount = 120600
         self.lastWalletCount = 1
         self.walFileSize = 100
@@ -29,12 +33,16 @@ class WalletGen:
         self.numbers = []
         self.passwords = []
 
+
+
         # Create DIR Struct
         if not os.path.exists(self.workDir):
             os.makedirs(self.workDir)
 
         if not os.path.exists(self.walletsLoc):
             os.makedirs(self.walletsLoc)
+
+        logging.basicConfig(filename=self.logfile, level=logging.INFO)
 
         if self.walletsTotalCount > 0:
             self.currentWalletFolder = "{}{}_{}".format(self.walletsLoc, self.walletsTotalCount + 1,
@@ -66,6 +74,7 @@ class WalletGen:
                     savFile.write(line)
 
             print("FileSaved: {}".format(walletFile))
+            logging.info("{} FileSaved: {}".format(datetime.datetime.now(), walletFile))
             self.Wallets = []
 
             if self.walletsTotalCount % self.walFolderSize == 0:
