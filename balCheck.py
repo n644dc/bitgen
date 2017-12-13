@@ -10,6 +10,7 @@ from time import sleep
 
 watchList = []
 goldList = []
+startingPlace = 38761
 isLinux = sys.platform.lower().startswith('linux')
 workDir = '/var/www/html/bitcon' if isLinux else 'C:\\bitcon'
 logfile = "{}/loggo.txt".format(workDir) if isLinux else "{}\\loggo.txt"
@@ -54,12 +55,17 @@ def getAccts(url):
             getWallets(page)
 
 
-def isRepeat(pubKey):
+def isRepeat(pubKey, id_str):
     cmd = "grep -nr {} {}".format(pubKey, workDir)
     p = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
     out, err = p.communicate()
+    wid = int(id_str)
+    if wid < startingPlace:
+        logging.info("{} Repeat: {} #: {}".format(datetime.datetime.now(), pubKey, id_str))
+        return False
+
     if len(out.strip()) > 10:
-        logging.info("Repeat: {}".format(pubKey))
+        logging.info("{} Repeat: {} #: {}".format(datetime.datetime.now(), pubKey, id_str))
         return True
     else:
         return False
@@ -78,7 +84,7 @@ def getWallets(page):
         for walletRaw in content:
             wallet = walletRaw.split(',')
             wallet = [x.strip() for x in wallet]
-            if not isRepeat(wallet[5].strip()):
+            if not isRepeat(wallet[5].strip(), wallet[0].strip()):
                 checkBalance(wallet)
 
 
