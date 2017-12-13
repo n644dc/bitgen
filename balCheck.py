@@ -62,7 +62,7 @@ def isRepeat(pubKey, id_str):
     wid = int(id_str)
     if wid < startingPlace:
         logging.info("{} Repeat: {} #: {}".format(datetime.datetime.now(), pubKey, id_str))
-        return False
+        return True
 
     if len(out.strip()) > 10:
         logging.info("{} Repeat: {} #: {}".format(datetime.datetime.now(), pubKey, id_str))
