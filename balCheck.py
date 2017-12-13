@@ -4,6 +4,7 @@ import sys
 import os
 import random
 import logging
+import datetime
 from subprocess import Popen, PIPE
 from time import sleep
 
@@ -37,7 +38,7 @@ def saveWallet(wallet, typeu):
 
     with open(savFile, "w") as f:
         f.write(", ".join(wallet))
-    logging.info("wallet saved")
+    logging.info("{} wallet saved".format(datetime.datetime.now()))
 
 
 def getAccts(url):
@@ -48,7 +49,7 @@ def getAccts(url):
         content = req.content.decode('utf-8')
         content = content.split(',')
         content = [x.strip() for x in content]
-        logging.info("Checking Accounts for: {}".format(url))
+        logging.info("{} Checking Accounts for: {}".format(datetime.datetime.now(), url))
         for page in content:
             getWallets(page)
 
@@ -69,6 +70,7 @@ def getWallets(page):
     if req.status_code is not 200:
         print("Get Wallet Txt file: not reachable")
     else:
+        logging.info("{} Getting Wallets from Page: {}".format(datetime.datetime.now(), page))
         content = req.content.decode('utf-8')
         content = [s.strip() for s in content.splitlines()]
         for walletRaw in content:
