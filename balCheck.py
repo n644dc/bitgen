@@ -49,11 +49,9 @@ def getAccts(url):
 
 
 def isRepeat(pubKey):
-    cmd = "grep -nr '{}' {}".format(pubKey, workDir)
+    cmd = "grep -nr {} {}".format(pubKey, workDir)
     p = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
     out, err = p.communicate()
-    print "Return code: ", p.returncode
-    print out.rstrip(), err.rstrip()
     if len(out.strip()) < 1:
         return False
     else:

@@ -9,14 +9,15 @@ class WalletGen:
         self.isLinux = sys.platform.lower().startswith('linux')
 
         self.wordFile = 'linux.words'
-        self.wordFile = 'top100k.txt'
-        self.wordFile = 'topMillion.txt'
+        # self.wordFile = 'top100k.txt'
+        # self.wordFile = 'topMillion.txt'
 
         self.folderName = filter(str.isalnum, self.wordFile)
 
         # Init Vars
         self.workDir = '/var/www/html/bitcon' if self.isLinux else 'C:\\bitcon'
-        self.walletsLoc = "{}/{}/".format(self.workDir, self.folderName) if self.isLinux else "{}\\{}\\".format(self.workDir, self.folderName)
+        self.walletsLoc = "{}/{}/".format(self.workDir, self.folderName) if self.isLinux else "{}\\{}\\".format(
+            self.workDir, self.folderName)
 
         self.walletsTotalCount = 0
         self.lastWalletCount = 1
@@ -36,10 +37,10 @@ class WalletGen:
             os.makedirs(self.walletsLoc)
 
         if self.walletsTotalCount > 0:
-            self.currentWalletFolder = "{}{}_{}".format(self.walletsLoc, self.walletsTotalCount+1, self.walletsTotalCount+1+self.walFolderSize)
+            self.currentWalletFolder = "{}{}_{}".format(self.walletsLoc, self.walletsTotalCount + 1,
+                                                        self.walletsTotalCount + 1 + self.walFolderSize)
         else:
             self.currentWalletFolder = "{}{}_{}".format(self.walletsLoc, self.lastWalletCount, self.walFolderSize)
-
 
     @staticmethod
     def representsInt(s):
@@ -52,8 +53,9 @@ class WalletGen:
     def saveWallets(self):
         currentNumOfWallets = len(self.Wallets)
         if currentNumOfWallets == self.walFileSize:
-            fileNom = "{}_{}.txt".format((self.walletsTotalCount-currentNumOfWallets)+1, self.walletsTotalCount)
-            walletFile = "{}/{}".format(self.currentWalletFolder,fileNom) if self.isLinux else "{}\\{}".format(self.currentWalletFolder,fileNom)
+            fileNom = "{}_{}.txt".format((self.walletsTotalCount - currentNumOfWallets) + 1, self.walletsTotalCount)
+            walletFile = "{}/{}".format(self.currentWalletFolder, fileNom) if self.isLinux else "{}\\{}".format(
+                self.currentWalletFolder, fileNom)
 
             if not os.path.exists(self.currentWalletFolder):
                 os.makedirs(self.currentWalletFolder)
@@ -71,12 +73,9 @@ class WalletGen:
                 walletFolderName = "{}_{}".format(self.lastWalletCount, self.walletsTotalCount + self.walFolderSize)
                 self.currentWalletFolder = "{}{}".format(self.walletsLoc, walletFolderName)
 
-
-
     def genPrep(self, phraseArray):
         phrase = "".join(phraseArray)
         self.generateWallet(phrase)
-
 
     def generateWallet(self, phrase):
         private_key = BitcoinPrivateKey.from_passphrase(phrase)
@@ -85,7 +84,7 @@ class WalletGen:
         privateWIF = private_key.to_wif()
 
         public_key = private_key.public_key()
-        publicHex  = public_key.to_hex()
+        publicHex = public_key.to_hex()
         publicAddr = public_key.address()
         publicH160 = public_key.hash160()
 
@@ -95,26 +94,25 @@ class WalletGen:
         self.saveWallets()
 
     def generatePhrases(self):
+        # with open(self.wordFile) as f:
+        #     self.words = f.readlines()
+        # self.words = [x.strip() for x in self.words]
+        #
+        # for word in self.words[self.walletsTotalCount:]:
+        #     self.generateWallet(word)
+
         with open(self.wordFile) as f:
             self.words = f.readlines()
+
         self.words = [x.strip() for x in self.words]
+        self.numbers = [x for x in self.words if self.representsInt(x)]
+        self.words = [x for x in self.words if len(x) >= 3]
+        self.words = [x for x in self.words if "'" not in x]
 
-        for word in self.words[self.walletsTotalCount:]:
-            self.generateWallet(word)
-
-
-        # with open(self.wordFile) as f:
-        #    self.words = f.readlines()
-        # self.words = [x.strip() for x in self.words]
-        # self.numbers = [x for x in self.words if self.representsInt(x)]
-        # self.words = [x for x in self.words if len(x) >= 3]
-        # self.words = [x for x in self.words if "'" not in x]
-        # self.words = self.words + self.numbers
-        #
-        # for word in self.words:
-        #     self.genPrep([word])
-        #     for number in self.numbers:
-        #         self.genPrep([word, number])
+        for word in self.words:
+            self.genPrep([word])
+            for number in self.numbers:
+                self.genPrep([word, number])
 
 
 def main():
