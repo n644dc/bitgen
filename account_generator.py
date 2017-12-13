@@ -19,7 +19,7 @@ class WalletGen:
         self.walletsLoc = "{}/{}/".format(self.workDir, self.folderName) if self.isLinux else "{}\\{}\\".format(
             self.workDir, self.folderName)
 
-        self.walletsTotalCount = 0
+        self.walletsTotalCount = 120600
         self.lastWalletCount = 1
         self.walFileSize = 100
         self.walFolderSize = 20000
@@ -94,25 +94,25 @@ class WalletGen:
         self.saveWallets()
 
     def generatePhrases(self):
-        # with open(self.wordFile) as f:
-        #     self.words = f.readlines()
-        # self.words = [x.strip() for x in self.words]
-        #
-        # for word in self.words[self.walletsTotalCount:]:
-        #     self.generateWallet(word)
-
         with open(self.wordFile) as f:
             self.words = f.readlines()
-
         self.words = [x.strip() for x in self.words]
-        self.numbers = [x for x in self.words if self.representsInt(x)]
-        self.words = [x for x in self.words if len(x) >= 3]
-        self.words = [x for x in self.words if "'" not in x]
 
-        for word in self.words:
-            self.genPrep([word])
-            for number in self.numbers:
-                self.genPrep([word, number])
+        for word in self.words[self.walletsTotalCount:]:
+            self.generateWallet(word)
+
+        # with open(self.wordFile) as f:
+        #     self.words = f.readlines()
+        #
+        # self.words = [x.strip() for x in self.words]
+        # self.numbers = [x for x in self.words if self.representsInt(x)]
+        # self.words = [x for x in self.words if len(x) >= 3]
+        # self.words = [x for x in self.words if "'" not in x]
+        #
+        # for word in self.words:
+        #     self.genPrep([word])
+        #     for number in self.numbers:
+        #         self.genPrep([word, number])
 
 
 def main():
