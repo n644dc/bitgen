@@ -3,6 +3,7 @@ import json
 import sys
 import os
 import random
+import logging
 from subprocess import Popen, PIPE
 from time import sleep
 
@@ -10,9 +11,12 @@ watchList = []
 goldList = []
 isLinux = sys.platform.lower().startswith('linux')
 workDir = '/var/www/html/bitcon' if isLinux else 'C:\\bitcon'
+logfile = "{}/loggo.txt".format(workDir) if isLinux else "{}\\loggo.txt"
 
 if not os.path.exists(workDir):
     os.makedirs(workDir)
+
+logging.basicConfig(filename=logfile, level=logging.INFO)
 
 goldDir = "{}/{}".format(workDir, 'gold') if isLinux else "{}\\{}\\".format(workDir, 'gold')
 watchDir = "{}/{}/".format(workDir, 'watch') if isLinux else "{}\\{}\\".format(workDir, 'watch')
@@ -33,6 +37,7 @@ def saveWallet(wallet, typeu):
 
     with open(savFile, "w") as f:
         f.write(", ".join(wallet))
+    logging.info("wallet saved")
 
 
 def getAccts(url):
@@ -43,7 +48,7 @@ def getAccts(url):
         content = req.content.decode('utf-8')
         content = content.split(',')
         content = [x.strip() for x in content]
-
+        logging.info("Checking Accounts for: {}".format(url))
         for page in content:
             getWallets(page)
 
@@ -53,6 +58,7 @@ def isRepeat(pubKey):
     p = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
     out, err = p.communicate()
     if len(out.strip()) < 1:
+        logging.info("Repeat: {}".format(pubKey))
         return False
     else:
         return True
@@ -81,7 +87,9 @@ def checkBalance(wallet):
     tot1 = 0
 
     if r1.status_code is not 200:
-        print("cant look up bal, blockchain api issue")
+        msg = "cant look up bal, blockchain api issue"
+        logging.info(msg)
+        print(msg)
 
     if r1.status_code == 200:
         acctCheck1 = json.loads(r1.content.decode('utf-8'))[wallet[5].strip()]
@@ -89,6 +97,7 @@ def checkBalance(wallet):
         tot1 = acctCheck1['total_received']
 
     if final1 > 0:
+        logging.info("GOLD FOUND")
         print
         print("*!*" * 100)
         print("GOT ONE!!!!!!!!!!!!!!!1")
@@ -99,6 +108,7 @@ def checkBalance(wallet):
         saveWallet(wallet, 'gold')
 
     if tot1 > 0:
+        logging.info("Active Wallet Found")
         print
         print("*" * 50)
         print("WATCH OUT!!!!!")
