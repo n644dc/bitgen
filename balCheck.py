@@ -62,13 +62,15 @@ def isRepeat(pubKey):
         logging.info("Repeat: {}".format(pubKey))
         return True
     else:
-        return True
+        return False
 
 
 def getWallets(page):
     req = requests.get(page)
     if req.status_code is not 200:
-        print("Get Wallet Txt file: not reachable")
+        msg = "Get Wallet Txt file: not reachable"
+        logging.info(msg)
+        print(msg)
     else:
         logging.info("{} Getting Wallets from Page: {}".format(datetime.datetime.now(), page))
         content = req.content.decode('utf-8')
@@ -76,7 +78,6 @@ def getWallets(page):
         for walletRaw in content:
             wallet = walletRaw.split(',')
             wallet = [x.strip() for x in wallet]
-
             if not isRepeat(wallet[5].strip()):
                 checkBalance(wallet)
 
