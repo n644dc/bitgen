@@ -3,6 +3,7 @@ import json
 import sys
 import os
 import random
+from subprocess import Popen, PIPE
 from time import sleep
 
 watchList = []
@@ -47,6 +48,18 @@ def getAccts(url):
             getWallets(page)
 
 
+def isRepeat(pubKey):
+    cmd = "grep -nr '{}' {}".format(pubKey, workDir)
+    p = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
+    out, err = p.communicate()
+    print "Return code: ", p.returncode
+    print out.rstrip(), err.rstrip()
+    if len(out.strip()) < 1:
+        return False
+    else:
+        return True
+
+
 def getWallets(page):
     req = requests.get(page)
     if req.status_code is not 200:
@@ -57,7 +70,9 @@ def getWallets(page):
         for walletRaw in content:
             wallet = walletRaw.split(',')
             wallet = [x.strip() for x in wallet]
-            checkBalance(wallet)
+
+            if not isRepeat(wallet[5].strip()):
+                checkBalance(wallet)
 
 
 def checkBalance(wallet):
@@ -96,4 +111,4 @@ def checkBalance(wallet):
         saveWallet(wallet, 'watch')
 
 
-getAccts('http://172.26.14.114/acct_files.php')
+getAccts('http://18.217.247.116/acct_files.php')
