@@ -57,9 +57,9 @@ def isRepeat(pubKey):
     cmd = "grep -nr {} {}".format(pubKey, workDir)
     p = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
     out, err = p.communicate()
-    if len(out.strip()) < 1:
+    if len(out.strip()) > 10:
         logging.info("Repeat: {}".format(pubKey))
-        return False
+        return True
     else:
         return True
 
