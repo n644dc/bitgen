@@ -8,9 +8,9 @@ class WalletGen:
 
         self.isLinux = sys.platform.lower().startswith('linux')
 
-        self.wordFile = 'linux.words'
+        # self.wordFile = 'linux.words'
         # self.wordFile = 'top100k.txt'
-        # self.wordFile = 'topMillion.txt'
+        self.wordFile = 'topMillion.txt'
 
         self.folderName = filter(str.isalnum, self.wordFile)
 
