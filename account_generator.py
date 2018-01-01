@@ -24,7 +24,7 @@ class WalletGen:
 
         self.logfile = "{}/loggo.txt".format(self.workDir) if self.isLinux else "{}\\loggo.txt".format(self.workDir)
 
-        self.walletsTotalCount = 0
+        self.walletsTotalCount = 347500
         self.lastWalletCount = 1
         self.walFileSize = 100
         self.walFolderSize = 20000
@@ -106,6 +106,9 @@ class WalletGen:
         self.walletsTotalCount += 1
         self.saveWallets()
 
+    # Manipulate generatePhrases to a desired scheme.
+    # Different passphrase schemes will require different generation techniques.
+    # Also make sure to adjust startPos to work accordingly when the application/server/etc goes down. 
     def generatePhrases(self):
         # with open(self.wordFile) as f:
         #     self.words = f.readlines()
@@ -127,7 +130,11 @@ class WalletGen:
         exclude = filter(regex.search, self.words)
         self.words = [x.lower() for x in self.words if x not in exclude]
 
-        for word in self.words:
+
+        # startPos = self.walletsTotalCount  # Use when using a single list and not concating any words or nums together
+        startPos = (self.walletsTotalCount / len(self.numbers)) + 1
+
+        for word in self.words[startPos:]:
             for number in self.numbers:
                 self.genPrep([word, number])
 
