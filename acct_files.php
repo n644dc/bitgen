@@ -13,6 +13,11 @@ usort ( $output, function( $a, $b ) {
 });
 
 foreach ($output as $a) {
-	echo '<a href=\'http://'.$_SERVER['HTTP_HOST'].'/'.$a[1].'\'>'.$a[1].'</a><br />';
+    if (strpos($a[1], 'loggo') !== false) {
+
+    } else {
+        echo '<a href=\'http://'.$_SERVER['HTTP_HOST'].'/'.$a[1].'\'>'.$a[1].'</a><br />';
+    }
+
 }
 ?>

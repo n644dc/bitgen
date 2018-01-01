@@ -3,6 +3,7 @@ import sys
 import os
 import logging
 import datetime
+import re
 
 
 class WalletGen:
@@ -10,9 +11,9 @@ class WalletGen:
 
         self.isLinux = sys.platform.lower().startswith('linux')
 
-        # self.wordFile = 'linux.words'
+        self.wordFile = 'linux.words'
         # self.wordFile = 'top100k.txt'
-        self.wordFile = 'topMillion.txt'
+        # self.wordFile = 'topMillion.txt'
 
         self.folderName = filter(str.isalnum, self.wordFile)
 
@@ -21,9 +22,9 @@ class WalletGen:
         self.walletsLoc = "{}/{}/".format(self.workDir, self.folderName) if self.isLinux else "{}\\{}\\".format(
             self.workDir, self.folderName)
 
-        self.logfile = "{}/loggo.txt".format(self.workDir) if self.isLinux else "{}\\loggo.txt"
+        self.logfile = "{}/loggo.txt".format(self.workDir) if self.isLinux else "{}\\loggo.txt".format(self.workDir)
 
-        self.walletsTotalCount = 120600
+        self.walletsTotalCount = 0
         self.lastWalletCount = 1
         self.walFileSize = 100
         self.walFolderSize = 20000
@@ -32,8 +33,6 @@ class WalletGen:
         self.words = []
         self.numbers = []
         self.passwords = []
-
-
 
         # Create DIR Struct
         if not os.path.exists(self.workDir):
@@ -47,9 +46,11 @@ class WalletGen:
         logging.info("{} Starting At Wallet #: {}".format(datetime.datetime.now(), self.walletsTotalCount))
 
         if self.walletsTotalCount > 0:
+            # Creats folder where we left off if the app is restarted and walletsTotalCount is manually set.
             self.currentWalletFolder = "{}{}_{}".format(self.walletsLoc, self.walletsTotalCount + 1,
                                                         self.walletsTotalCount + 1 + self.walFolderSize)
         else:
+            # Basecase starting folder
             self.currentWalletFolder = "{}{}_{}".format(self.walletsLoc, self.lastWalletCount, self.walFolderSize)
 
     @staticmethod
@@ -79,6 +80,7 @@ class WalletGen:
             logging.info("{} FileSaved: {}".format(datetime.datetime.now(), walletFile))
             self.Wallets = []
 
+            # If we've reached the wallet folder size, create the next folder
             if self.walletsTotalCount % self.walFolderSize == 0:
                 self.lastWalletCount = self.walletsTotalCount + 1
                 walletFolderName = "{}_{}".format(self.lastWalletCount, self.walletsTotalCount + self.walFolderSize)
@@ -105,25 +107,29 @@ class WalletGen:
         self.saveWallets()
 
     def generatePhrases(self):
-        with open(self.wordFile) as f:
-            self.words = f.readlines()
-        self.words = [x.strip() for x in self.words]
-
-        for word in self.words[self.walletsTotalCount:]:
-            self.generateWallet(word)
-
         # with open(self.wordFile) as f:
         #     self.words = f.readlines()
-        #
         # self.words = [x.strip() for x in self.words]
-        # self.numbers = [x for x in self.words if self.representsInt(x)]
-        # self.words = [x for x in self.words if len(x) >= 3]
-        # self.words = [x for x in self.words if "'" not in x]
         #
-        # for word in self.words:
-        #     self.genPrep([word])
-        #     for number in self.numbers:
-        #         self.genPrep([word, number])
+        # for word in self.words[self.walletsTotalCount:]:
+        #     self.generateWallet(word)
+
+        with open(self.wordFile) as f:
+            self.words = f.readlines()
+
+        self.words = [x.strip() for x in self.words]
+        self.numbers = [x for x in self.words if self.representsInt(x) and 1900 <= int(x) <= 2020]
+        self.words = [x for x in self.words if 4 <= len(x) <= 9]
+        self.words = [x for x in self.words if "'" not in x]
+        self.words = [x for x in self.words if not self.representsInt(x)]
+
+        regex = re.compile(r'(.)\1{2,}')
+        exclude = filter(regex.search, self.words)
+        self.words = [x.lower() for x in self.words if x not in exclude]
+
+        for word in self.words:
+            for number in self.numbers:
+                self.genPrep([word, number])
 
 
 def main():

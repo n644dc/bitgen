@@ -13,7 +13,7 @@ goldList = []
 startingPlace = 38761
 isLinux = sys.platform.lower().startswith('linux')
 workDir = '/var/www/html/bitcon' if isLinux else 'C:\\bitcon'
-logfile = "{}/loggo.txt".format(workDir) if isLinux else "{}\\loggo.txt"
+logfile = "{}/loggo.txt".format(workDir) if isLinux else "{}\\loggo.txt".format(workDir)
 
 if not os.path.exists(workDir):
     os.makedirs(workDir)
@@ -56,19 +56,20 @@ def getAccts(url):
 
 
 def isRepeat(pubKey, id_str):
-    cmd = "grep -nr {} {}".format(pubKey, workDir)
-    p = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
-    out, err = p.communicate()
     wid = int(id_str)
     if wid < startingPlace:
         logging.info("{} Repeat: {} #: {}".format(datetime.datetime.now(), pubKey, id_str))
         return True
 
+    cmd = "grep -nr {} {}".format(pubKey, workDir)
+    p = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
+    out, err = p.communicate()
+
     if len(out.strip()) > 10:
         logging.info("{} Repeat: {} #: {}".format(datetime.datetime.now(), pubKey, id_str))
         return True
-    else:
-        return False
+
+    return False
 
 
 def getWallets(page):
