@@ -108,7 +108,7 @@ class WalletGen:
 
     # Manipulate generatePhrases to a desired scheme.
     # Different passphrase schemes will require different generation techniques.
-    # Also make sure to adjust startPos to work accordingly when the application/server/etc goes down. 
+    # Also make sure to adjust startPos to work accordingly when the application/server/etc goes down.
     def generatePhrases(self):
         # with open(self.wordFile) as f:
         #     self.words = f.readlines()
