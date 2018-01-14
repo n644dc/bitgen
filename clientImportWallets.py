@@ -2,13 +2,25 @@ import glob
 import json
 from subprocess import Popen, PIPE
 
-
 jsonWalletArray = []
 
 
 def importCLI():
-    cmd = "bitcoin-cli importmulti '{}'".format(jsonWalletArray[:4])
+    segmentArray = []
+    count = 0
+    for wallet in jsonWalletArray:
+        segmentArray.append(wallet)
+        count += 1
+        if count % 4 == 0:
+            runCommand(segmentArray)
+            segmentArray = []
+
+
+def runCommand(segmentArray):
+    cmd = "bitcoin-cli importmulti '{}'".format(segmentArray)
+    cmd += " '{ \"rescan\": true }'"
     print(cmd)
+
     # p = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
     # out, err = p.communicate()
 
