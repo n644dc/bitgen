@@ -48,7 +48,7 @@ def readWalletFile(fname):
         jWal = {}
         scriptPubKey["address"] = pubKey
         jWal["scriptPubKey"] = scriptPubKey
-        jWal["timestamp"] = "0"
+        jWal["timestamp"] = 0
         jWal["label"] = label
         jsonWalletArray.append(jWal)
 
