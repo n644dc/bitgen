@@ -12,7 +12,7 @@ def importCLI():
         segmentArray.append(wallet)
         count += 1
         if count % 4 == 0:
-            runCommand(segmentArray)
+            runCommand(json.dumps(segmentArray))
             segmentArray = []
 
 
