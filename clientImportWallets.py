@@ -7,9 +7,10 @@ jsonWalletArray = []
 
 
 def importCLI():
-    cmd = "bitcoin-cli importmulti '{}'".format(jsonWalletArray)
-    p = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
-    out, err = p.communicate()
+    cmd = "bitcoin-cli importmulti '{}'".format(jsonWalletArray[:4])
+    print(cmd)
+    # p = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
+    # out, err = p.communicate()
 
 
 def getWalletFiles(direct):
@@ -37,8 +38,7 @@ def readWalletFile(fname):
         jWal["scriptPubKey"] = scriptPubKey
         jWal["timestamp"] = "0"
         jWal["label"] = label
-        jsonWallet = json.dumps(jWal)
-        jsonWalletArray.append(jsonWallet)
+        jsonWalletArray.append(jWal)
 
 
 getWalletFiles('C:\\bitcon\\watches_700500')
