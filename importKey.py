@@ -26,8 +26,6 @@ def getWalletFiles(direct):
     for walFile in walletFiles:
         readWalletFile(walFile)
 
-    importCLI()
-
 
 def readWalletFile(fname):
     with open(fname) as f:
