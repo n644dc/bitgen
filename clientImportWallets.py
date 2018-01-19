@@ -6,6 +6,7 @@ from subprocess import Popen, PIPE
 jsonWalletArray = []
 
 
+
 def importCLI():
     segmentArray = []
     count = 0
@@ -18,7 +19,7 @@ def importCLI():
 
 
 def runCommand(segmentArray):
-        cmd = "bitcoin-cli importmulti '{}'".format(segmentArray)
+        cmd = "bitcoin-cli importprivkey '{}' \"{}\" false".format(segmentArray, "aWalletName")
         cmd += " '{ \"rescan\": true }'"
         p = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
         out, err = p.communicate()
