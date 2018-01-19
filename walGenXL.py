@@ -75,7 +75,7 @@ class WalletGen:
             private_key = BitcoinPrivateKey.from_passphrase(phrase)
             self.keys.append(private_key.to_wif())
             self.keyCount += 1
-            if self.keyCount % 5 == 0:
+            if self.keyCount % 5000 == 0:
                 self.writeOutKeys()
                 self.keys = []
 
