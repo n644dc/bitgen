@@ -1,0 +1,95 @@
+Arizona Cardinals
+Atlanta Falcons
+Baltimore Ravens
+Buffalo Bills
+Carolina Panthers
+Chicago Bears
+Cincinnati Bengals
+Cleveland Browns
+Dallas Cowboys
+Denver Broncos
+Detroit Lions
+Green Bay Packers
+Houston Texans
+Indianapolis Colts
+Jacksonville Jaguars
+Kansas City Chiefs
+Miami Dolphins
+Minnesota Vikings
+New England Patriots
+New Orleans Saints
+New York Giants
+New York Jets
+Oakland Raiders
+Philadelphia Eagles
+Pittsburgh Steelers
+San Diego Chargers
+San Francisco 49ers
+Seattle Seahawks
+St Louis Rams
+Saint Louis Rams
+Tampa Bay Buccaneers
+Tennessee Titans
+Washington Redskins
+Arizona Diamondbacks
+Atlanta Braves
+Baltimore Orioles
+Boston Red Sox
+Chicago Cubs
+Chicago White Sox
+Cincinnati Reds
+Cleveland Indians
+Colorado Rockies
+Detroit Tigers
+Miami Marlins
+Houston Astros
+Kansas City Royals
+Los Angeles Angels of Anaheim
+Los Angeles Dodgers
+Milwaukee Brewers
+Minnesota Twins
+New York Mets
+New York Yankees
+Oakland Athletics
+Philadelphia Phillies
+Pittsburgh Pirates
+Saint Louis Cardinals
+St Louis Cardinals
+San Diego Padres
+San Francisco Giants
+Seattle Mariners
+Tampa Bay Rays
+Texas Rangers
+Toronto Blue Jays
+Washington Nationals
+Anaheim Ducks
+Arizona Coyotes
+Boston Bruins
+Buffalo Sabres
+Calgary Flames
+Carolina Hurricanes
+Chicago Blackhawks
+Colorado Avalanche
+Columbus Blue Jackets
+Dallas Stars
+Detroit Red Wings
+Edmonton Oilers
+Florida Panthers
+Los Angeles Kings
+Minnesota Wild
+Montreal Canadiens
+Nashville Predators
+New Jersey Devils
+New York Islanders
+New York Rangers
+Philadelphia Flyers
+Pittsburgh Penguins
+Ottawa Senators
+San Jose Sharks
+St Louis Blues
+Saint Louis Blues
+Tampa Bay Lightning
+Toronto Maple Leafs
+Vancouver Canucks
+Washington Capitals
+Winnipeg Jets
