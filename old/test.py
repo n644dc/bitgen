@@ -13,14 +13,14 @@ class WalletGen:
         self.keys = []
 
         # Default files
-        self.wordFile = 'nfl.txt'
+        self.wordFile = 'lastNames.txt'
         self.yearFile = 'years.txt'
         self.fileName = filter(str.isalnum, self.wordFile)
 
         # Key dump location
-        self.dumpFolder = "C:\\bitcon\\teams"
+        self.dumpFolder = "C:\\bitcon\\lastNames\\"
         if self.isLinux:
-            self.dumpFolder = "/var/www/html/teams"
+            self.dumpFolder = "/var/www/html/lastNames//"
 
         if not os.path.exists(self.dumpFolder):
             os.makedirs(self.dumpFolder)
@@ -38,8 +38,8 @@ class WalletGen:
         print("generating {}".format(self.fileName))
 
         self.loadYears()
-        self.loadPhrases()
-        print(len(self.phrases))
+        self.loadNames()
+        # print(len(self.phrases))
         self.generatePhraseWallets()
 
 
@@ -51,7 +51,23 @@ class WalletGen:
             self.years.append(line)
 
 
-    def loadPhrases(self):
+    def loadNames(self):
+        with open(self.wordFile) as f:
+            content = f.readlines()
+
+        content = [x.strip() for x in content]
+        for line in content:
+            name = line.split(' ')[0].lower()
+
+            self.phrases.append(name.title())
+            self.phrases.append(name.lower())
+
+            for year in self.years:
+                self.phrases.append("{}{}".format(name.title(), year))
+                self.phrases.append("{}{}".format(name.lower(), year))
+
+
+    def loadTeamPhrases(self):
         with open(self.wordFile) as f:
             content = f.readlines()
         content = [x.strip() for x in content]
@@ -89,10 +105,10 @@ class WalletGen:
         for phrase in self.phrases:
             private_key = BitcoinPrivateKey.from_passphrase(phrase)
             wif = private_key.to_wif()
-            print("{} - {}".format(phrase, wif))
             self.keys.append(wif)
             self.keyCount += 1
             if self.keyCount % 5000 == 0:
+                print("Writing out: {}".format(self.keyCount))
                 self.writeOutKeys()
                 self.keys = []
 
