@@ -18,4 +18,4 @@ class FUtils:
 
     def backupWallet(self, backupName="unknown"):
         backupWallet = "{}wallet.dat.{}".format(self.walletBackupLoc, backupName)
-        os.rename(self.bitcoinWallet, backupName)
+        os.rename(self.bitcoinWallet, backupWallet)

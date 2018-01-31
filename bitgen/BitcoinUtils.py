@@ -20,7 +20,7 @@ class BUtils:
         if isRescan:
             cmd += " -rescan"
         out, err = self.runCommand(cmd)
-        if self.STARTING in out:
+        if len(out) < 1:
             self.STATE = self.STARTING
             self.waitTillRunning()
             return True
@@ -36,11 +36,7 @@ class BUtils:
         return False
 
     def isRunning(self):
-        if self.STATE == self.STOPPING or self.STATE == self.STOPPED:
-            self.STATE = self.STOPPED
-            return False
         if '"":' in self.listAccounts():
-            self.STATE = self.RUNNING
             return True
         return False
 
