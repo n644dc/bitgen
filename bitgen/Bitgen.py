@@ -72,4 +72,4 @@ class BitGen:
 
 
 if __name__ == '__main__':
-    BitGen("/home/zebub/.bitcoin/", "/home/zebub/walletBackup/", "/home/zebub/code/keysRepo")
+    BitGen("/home/zebub/.bitcoin/", "/home/zebub/walletBackup/", "/home/zebub/code/keysRepo/")
