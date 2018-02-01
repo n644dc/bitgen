@@ -1,4 +1,6 @@
 from subprocess import Popen, PIPE
+import logging
+import datetime
 
 
 class BUtils:
@@ -8,11 +10,15 @@ class BUtils:
         self.STOPPED = 'stopped'
         self.RUNNING = 'running'
         self.STATE = 'stopped'
+        logfile = '/home/zebub/bitgenLogs/bitUtilsLog.txt'
+        logging.basicConfig(filename=logfile, level=logging.INFO)
+        logging.info("{} Bitgen Started".format(datetime.datetime.now()))
 
     @staticmethod
     def runCommand(cmd):
         p = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
         out, err = p.communicate()
+        logging.info("{} ran command: {} -_-_-_- out: {}  -+-+- err: {}".format(datetime.datetime.now(), cmd, out, err))
         return out, err
 
     def start(self, isRescan = False):
