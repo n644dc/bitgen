@@ -1,6 +1,7 @@
 from subprocess import Popen, PIPE
 import logging
 import datetime
+from time import sleep
 
 
 class BUtils:
@@ -27,6 +28,7 @@ class BUtils:
             cmd += " -rescan"
         out, err = self.runCommand(cmd)
         logging.info("{} ran command: {} -_-_-_- out: {}  -+-+- err: {}".format(datetime.datetime.now(), cmd, out, err))
+        sleep(5)
         if len(out) < 1:
             self.STATE = self.STARTING
             self.waitTillRunning()
@@ -37,11 +39,9 @@ class BUtils:
         cmd = "bitcoin-cli stop"
         out, err = self.runCommand(cmd)
         logging.info("{} ran command: {} -_-_-_- out: {}  -+-+- err: {}".format(datetime.datetime.now(), cmd, out, err))
-        if self.STOPPING in out:
-            self.STATE = self.STOPPING
-            self.waitTillStopped()
-            return True
-        return False
+        sleep(5)
+        self.waitTillStopped()
+        return True
 
     def isRunning(self):
         if '"":' in self.listAccounts():
@@ -51,12 +51,14 @@ class BUtils:
     def waitTillRunning(self):
         loop = True
         while loop:
+            sleep(1)
             if self.isRunning():
                 loop = False
 
     def waitTillStopped(self):
         loop = True
         while loop:
+            sleep(1)
             if not self.isRunning():
                 loop = False
 
