@@ -18,7 +18,7 @@ class BUtils:
     def runCommand(cmd):
         p = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
         out, err = p.communicate()
-        logging.info("{} ran command: {} -_-_-_- out: {}  -+-+- err: {}".format(datetime.datetime.now(), cmd, out, err))
+
         return out, err
 
     def start(self, isRescan = False):
@@ -26,6 +26,7 @@ class BUtils:
         if isRescan:
             cmd += " -rescan"
         out, err = self.runCommand(cmd)
+        logging.info("{} ran command: {} -_-_-_- out: {}  -+-+- err: {}".format(datetime.datetime.now(), cmd, out, err))
         if len(out) < 1:
             self.STATE = self.STARTING
             self.waitTillRunning()
@@ -35,6 +36,7 @@ class BUtils:
     def stop(self):
         cmd = "bitcoin-cli stop"
         out, err = self.runCommand(cmd)
+        logging.info("{} ran command: {} -_-_-_- out: {}  -+-+- err: {}".format(datetime.datetime.now(), cmd, out, err))
         if self.STOPPING in out:
             self.STATE = self.STOPPING
             self.waitTillStopped()
