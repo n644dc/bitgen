@@ -23,7 +23,7 @@ class BitGen:
             logging.error("{} NO KEY FILES FOUND #:{}".format(datetime.datetime.now(), len(self.keyFiles)))
 
         self.run()
-        logging.error("{} QUITTING FOR UNKNOWN REASON #:{}".format(datetime.datetime.now()))
+        logging.error("{} QUITTING FOR UNKNOWN REASON".format(datetime.datetime.now()))
 
     def run(self):
         if self.bitcoind.isRunning():
