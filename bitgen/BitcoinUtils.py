@@ -48,6 +48,13 @@ class BUtils:
             return True
         return False
 
+    def isStopped(self):
+        cmd = "ps aux | grep bitcoin"
+        out, err = self.runCommand(cmd)
+        if 'bitcoind' in out:
+            return False
+        return True
+
     def waitTillRunning(self):
         loop = True
         while loop:
@@ -59,7 +66,7 @@ class BUtils:
         loop = True
         while loop:
             sleep(1)
-            if not self.isRunning():
+            if self.isStopped(): 
                 loop = False
 
     def listAccounts(self):
