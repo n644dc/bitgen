@@ -34,35 +34,40 @@ class BitGen:
         logging.info("{} bitcoind started.".format(datetime.datetime.now()))
 
         for keyfile in self.keyFiles:
-            keyList = self.fileUtils.keyList(keyfile)
-            logging.info("{} Importing Keys ({}) from {}".format(datetime.datetime.now(), len(keyList), keyfile))
             fname = keyfile.split('/')[len(keyfile.split('/')) - 1].replace(".txt", '')
 
-            # IMPORT
-            importCount = 0
-            walletName = fname
-            for key in keyList:
-                importCount += 1
+            self.importKeys(keyfile, fname)
+            self.rescan()
+            self.recordAccounts(keyfile)
+            self.backupWallet(fname)
 
-                if importCount % 100 == 0:
-                    walletName = fname + '_' + str(importCount)
-                    logging.info("{} Importing to wallet {}".format(datetime.datetime.now(), walletName))
+    def importKeys(self, keyfile, fname):
+        keyList = self.fileUtils.keyList(keyfile)
+        logging.info("{} Importing Keys ({}) from {}".format(datetime.datetime.now(), len(keyList), keyfile))
+        importCount = 0
+        walletName = fname
+        for key in keyList:
+            importCount += 1
+            if importCount % 100 == 0:
+                walletName = fname + '_' + str(importCount)
+                logging.info("{} Importing to wallet {}".format(datetime.datetime.now(), walletName))
+            self.bitcoind.importKey(key, walletName)
 
-                self.bitcoind.importKey(key, walletName)
+    def rescan(self):
+        logging.info("{} Stopping bitcoind session for rescan".format(datetime.datetime.now()))
+        self.bitcoind.stop()
+        logging.info("{} Rescanning".format(datetime.datetime.now()))
+        self.bitcoind.start(True)
 
-            # Rescan and Backup
-            logging.info("{} Stopping bitcoind session for rescan".format(datetime.datetime.now()))
-            self.bitcoind.stop()
-            logging.info("{} Rescanning".format(datetime.datetime.now()))
-            self.bitcoind.start(True)
+    def recordAccounts(self, keyfile):
+        accountList = self.bitcoind.listAccounts()
+        logging.info("{} Results from {} --- {}".format(datetime.datetime.now(), keyfile, accountList))
+        self.bitcoind.stop()
 
-            accountList = self.bitcoind.listAccounts()
-            logging.info("{} Results from {} --- {}".format(datetime.datetime.now(), keyfile, accountList))
-            self.bitcoind.stop()
-
-            logging.info("{} Backing Up Wallet".format(datetime.datetime.now()))
-            self.fileUtils.backupWallet(fname)
-            self.bitcoind.start()
+    def backupWallet(self, fname):
+        logging.info("{} Backing Up Wallet".format(datetime.datetime.now()))
+        self.fileUtils.backupWallet(fname)
+        self.bitcoind.start()
 
     @staticmethod
     def setupLogging():
