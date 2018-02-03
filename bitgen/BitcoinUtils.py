@@ -12,8 +12,7 @@ class BUtils:
         self.RUNNING = 'running'
         self.STATE = 'stopped'
         logfile = '/home/zebub/bitgenLogs/bitUtilsLog.txt'
-        logging.basicConfig(filename=logfile, level=logging.INFO)
-        logging.info("{} Bitgen Started".format(datetime.datetime.now()))
+        logging.info("{} BUtils Started".format(datetime.datetime.now()))
 
     @staticmethod
     def runCommand(cmd):
@@ -66,7 +65,7 @@ class BUtils:
         loop = True
         while loop:
             sleep(1)
-            if self.isStopped(): 
+            if self.isStopped():
                 loop = False
 
     def listAccounts(self):

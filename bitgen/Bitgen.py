@@ -36,15 +36,16 @@ class BitGen:
         for keyfile in self.keyFiles:
             keyList = self.fileUtils.keyList(keyfile)
             logging.info("{} Importing Keys ({}) from {}".format(datetime.datetime.now(), len(keyList), keyfile))
+            fname = keyfile.split('/')[len(keyfile.split('/')) - 1].replace(".txt", '')
 
             # IMPORT
             importCount = 0
-            walletName = "wall"
+            walletName = fname
             for key in keyList:
                 importCount += 1
 
                 if importCount % 100 == 0:
-                    walletName = "wall" + str(importCount)
+                    walletName = fname + '_' + str(importCount)
                     logging.info("{} Importing to wallet {}".format(datetime.datetime.now(), walletName))
 
                 self.bitcoind.importKey(key, walletName)
@@ -55,7 +56,6 @@ class BitGen:
             logging.info("{} Rescanning".format(datetime.datetime.now()))
             self.bitcoind.start(True)
 
-            fname = keyfile.split('/')[len(keyfile.split('/')) - 1].replace(".txt", '')
             accountList = self.bitcoind.listAccounts()
             logging.info("{} Results from {} --- {}".format(datetime.datetime.now(), keyfile, accountList))
             self.bitcoind.stop()
